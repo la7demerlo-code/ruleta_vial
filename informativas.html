@@ -338,7 +338,7 @@ const grupo3 = [
 const TITULO_JUEGO = 'INFORMATIVAS';
 const GRUPO_ACTIVO = grupo3;
 const series = {
-    main: { datos: GRUPO_ACTIVO, remaining: GRUPO_ACTIVO.slice(), drawn: [], carton: null, tablero: [] }
+    main: { datos: GRUPO_ACTIVO, remaining: GRUPO_ACTIVO.slice(), drawn: [], carton: null, bingoMostrado: false }
 };
 let current = 'main';
 let spinning = false;
@@ -584,7 +584,8 @@ function quitarPendienteYSeguir() {
             st.drawn.push(elegido);
             agregarAlHistorial(elegido);
             marcarEnCarton(elegido);
-            avanzarTablero(elegido);
+            renderTablero();
+            verificarBingo();
 
             canvas.style.transform = 'rotate(0deg)';
             drawWheel(st.remaining);
@@ -687,36 +688,40 @@ function marcarEnCarton() { renderCarton(); }
 
 /* ============ TABLERO "CARTÓN GANADOR" (se llena solo, sin tachar) ============ */
 function renderTablero() {
+    // El "cartón ganador" ahora ES el cartón en juego: se va llenando
+    // solo con las casillas de ese cartón que ya salieron en la ruleta.
     const st = series[current];
     const cont = document.getElementById('tableroGrid');
     cont.innerHTML = '';
-    for (let i = 0; i < 16; i++) {
-        const item = st.tablero[i];
+    if (!st.carton) return;
+    const idsSalidos = new Set(st.drawn.map(d => d.id));
+    st.carton.items.forEach(item => {
         const cell = document.createElement('div');
-        if (item) {
+        if (idsSalidos.has(item.id)) {
             cell.className = 'carton-cell';
             cell.innerHTML = imgHtml(item.id);
         } else {
             cell.className = 'carton-cell vacia';
         }
         cont.appendChild(cell);
+    });
+}
+function verificarBingo() {
+    // Bingo real: gana cuando TODAS las casillas del cartón en juego
+    // ya salieron en la ruleta (no a las 16 tiradas nomas).
+    const st = series[current];
+    if (!st.carton || st.bingoMostrado) return;
+    const idsSalidos = new Set(st.drawn.map(d => d.id));
+    const completo = st.carton.items.every(item => idsSalidos.has(item.id));
+    if (completo) {
+        st.bingoMostrado = true;
+        setTimeout(() => mostrarCartonGanador(st.carton.items), 300);
     }
 }
-function avanzarTablero(elegido) {
-    const st = series[current];
-    if (st.tablero.length < 16) {
-        st.tablero.push(elegido);
-        renderTablero();
-        if (st.tablero.length === 16) {
-            setTimeout(mostrarCartonGanador, 300);
-        }
-    }
-}
-function mostrarCartonGanador() {
-    const st = series[current];
+function mostrarCartonGanador(items) {
     const grid = document.getElementById('cartonGanadorGrid');
     grid.innerHTML = '';
-    st.tablero.forEach(item => {
+    items.forEach(item => {
         const cell = document.createElement('div');
         cell.className = 'carton-cell';
         cell.innerHTML = imgHtml(item.id);
@@ -757,7 +762,7 @@ document.getElementById('btnReiniciar').addEventListener('click', () => {
     const st = series[current];
     st.remaining = st.datos.slice();
     st.drawn = [];
-    st.tablero = [];
+    st.bingoMostrado = false;
     generarCarton(current);
     canvas.style.transform = 'rotate(0deg)';
     drawWheel(st.remaining);
