@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruleta Vial - E.E.S. N° 7 MERLO</title>
+<style>
+    * { box-sizing: border-box; }
+    html, body {
+        margin: 0; padding: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(circle at 50% 20%, #232b3d, #14181f 70%);
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+    }
+    .contenedor { text-align: center; padding: 20px; }
+    h1 {
+        font-size: clamp(22px, 4vw, 34px);
+        text-transform: uppercase;
+        margin: 0 0 6px;
+        letter-spacing: 1px;
+    }
+    p.subtitulo {
+        font-size: clamp(13px, 1.6vw, 16px);
+        color: #cfd6e4;
+        margin: 0 0 28px;
+    }
+    .grilla {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+        gap: 22px;
+        max-width: 560px;
+        margin: 0 auto;
+    }
+    a.boton3d {
+        display: flex; align-items: center; justify-content: center;
+        min-height: 90px;
+        font-size: clamp(14px, 1.8vw, 17px);
+        font-weight: bold; font-style: italic;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #fff;
+        border-radius: 14px;
+        padding: 14px 10px;
+        border: none;
+        box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 16px rgba(0,0,0,0.35);
+        transition: transform .08s ease, box-shadow .08s ease, filter .1s ease;
+        line-height: 1.3;
+    }
+    a.boton3d:hover { filter: brightness(1.12); }
+    a.boton3d:active {
+        transform: translateY(6px);
+        box-shadow: 0 1px 0 rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.35);
+    }
+    #b1 { background: linear-gradient(#3a6fd8, #2b53a8); }
+    #b2 { background: linear-gradient(#e3342f, #b52420); }
+    #b3 { background: linear-gradient(#ff8c1a, #cc6b0f); }
+    #b4 { background: linear-gradient(#2f9e44, #217a33); }
+
+    footer {
+        margin-top: 26px;
+        font-size: 11.5px;
+        color: #7f8aa3;
+    }
+</style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Ruleta Vial</h1>
+        <p class="subtitulo">Elegí una categoría de señales para jugar</p>
+        <div class="grilla">
+            <a id="b1" class="boton3d" href="informativas.html">Informativas</a>
+            <a id="b2" class="boton3d" href="reglamentarias1.html">Reglamentarias 1</a>
+            <a id="b3" class="boton3d" href="reglamentarias2.html">Reglamentarias 2</a>
+            <a id="b4" class="boton3d" href="señales inicial y primaria.html">Inicial y Primaria</a>
+        </div>
+        <footer>E.E.S. N° 7 MERLO</footer>
+    </div>
+</body>
+</html>

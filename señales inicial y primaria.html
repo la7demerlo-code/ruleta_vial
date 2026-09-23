@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Educación Vial — Jardín y Primaria (Argentina)</title>
+<style>
+body { margin:0; background:#eeeeee; padding:20px 0; }
+.tablero { font-family:'Georgia',serif; max-width:520px; margin:0 auto; padding:10px; box-sizing:border-box; }
+
+.tablero .intro { background:#fff8e6; border-left:5px solid #F6B40E; padding:10px 14px; border-radius:6px; font-size:0.9rem; line-height:1.4; margin-bottom:12px; }
+
+.tablero .selector { margin-bottom:16px; }
+.tablero .selector label { display:block; font-weight:bold; margin-bottom:6px; font-size:0.9rem; }
+.tablero .selector select { width:100%; padding:12px; font-size:1rem; border-radius:8px; border:2px solid #001d3d; background:white; box-sizing:border-box; font-weight:bold; }
+
+.tablero .nivel-panel { display:none; }
+.tablero .nivel-panel.visible { display:block; }
+
+.tablero .grilla { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+
+.tablero .cat-btn {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-decoration:none;
+  background: linear-gradient(180deg, #003a75 0%, #001d3d 100%);
+  color:white;
+  padding:10px 4px;
+  border-radius:10px;
+  text-align:center;
+  font-weight:bold;
+  font-size:0.7rem;
+  line-height:1.2;
+  border:1px solid #F6B40E;
+  min-height:70px;
+  box-shadow:
+    0 4px 0 #001229,
+    0 6px 10px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  transform: translateY(0);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  cursor:pointer;
+}
+.tablero .cat-btn:hover {
+  background: linear-gradient(180deg, #004a92 0%, #002a54 100%);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 #001229,
+    0 10px 14px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.tablero .cat-btn:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 1px 0 #001229,
+    0 2px 4px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.tablero .cat-btn .emoji { display:block; font-size:1.4rem; margin-bottom:3px; }
+
+.tablero .aviso { background:#eaf3fb; border-left:5px solid #2980b9; padding:10px 14px; border-radius:6px; font-size:0.78rem; line-height:1.4; margin-top:16px; }
+</style>
+</head>
+<body>
+
+<div class="tablero">
+
+  <p class="intro">🚦 <strong>Educación Vial</strong> — juegos reales de Wordwall para trabajar señales, semáforo y seguridad en la calle. Elegí el nivel y tocá cualquier botón para jugar directo.</p>
+
+  <div class="selector">
+    <label for="selNivel">📚 Elegí el nivel</label>
+    <select id="selNivel" onchange="cambiarNivel(this.value)">
+      <option value="">Seleccioná Jardín o Primaria</option>
+      <option value="jardin">🧸 Jardín</option>
+      <option value="primaria">🎒 Primaria</option>
+    </select>
+  </div>
+
+  <!-- ===== JARDÍN ===== -->
+  <div class="nivel-panel" id="panelJardin">
+    <div class="grilla">
+      <a class="cat-btn" href="https://wordwall.net/es/resource/16685571/educaci%C3%B3n-vial-para-ni%C3%B1os?ref=community" target="_blank" rel="noopener"><span class="emoji">📦</span>Educación Vial para Niños</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/104737323/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🚸</span>Educación Vial (Emparejar)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/72045731/educaci%C3%B3n-vial-est%C3%A1-bien-o-est%C3%A1-mal?ref=community" target="_blank" rel="noopener"><span class="emoji">✅</span>¿Está Bien o Está Mal?</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/25164667/educaci%C3%B3n-vial-se%C3%B1ales-de-tr%C3%A1nsito?ref=community" target="_blank" rel="noopener"><span class="emoji">🛑</span>Señales de Tránsito</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/4648125/cruzar-la-calle?ref=community" target="_blank" rel="noopener"><span class="emoji">🚶</span>Cruzar la Calle</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/78218529/inform%C3%A1tica/ordena-algoritmo-para-cruzar-la-calle?ref=community" target="_blank" rel="noopener"><span class="emoji">🔢</span>Ordená: Cruzar la Calle</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/7921555/educacion-y-seguridad-vial-transportes-y-peatones?ref=community" target="_blank" rel="noopener"><span class="emoji">🚏</span>Transportes y Peatones</a>
+    </div>
+  </div>
+
+  <!-- ===== PRIMARIA ===== -->
+  <div class="nivel-panel" id="panelPrimaria">
+    <div class="grilla">
+      <a class="cat-btn" href="https://wordwall.net/es/resource/101357972/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🚦</span>Educación Vial (Tipos de Señales)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/23536427/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🚦</span>Educación Vial (Valores)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/72598298/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🖼️</span>Educación Vial (Parejas)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/68744219/educaci%C3%B3n-vial-1%C2%BA-primaria?ref=community" target="_blank" rel="noopener"><span class="emoji">1️⃣</span>Educación Vial 1º Primaria</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/33788423/crucigrama-sobre-la-educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🔤</span>Crucigrama Educación Vial</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/67103722/educaci%C3%B3n-vial-fuente-villa?ref=community" target="_blank" rel="noopener"><span class="emoji">🖼️</span>Educación Vial (Fuente Villa)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/101358569/peatones-y-veh%C3%ADculos?ref=community" target="_blank" rel="noopener"><span class="emoji">🚶</span>Peatones y Vehículos</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/101359978/se%C3%B1al-y-significado?ref=community" target="_blank" rel="noopener"><span class="emoji">🛑</span>Señal y Significado</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/56710392/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">❓</span>Educación Vial (5º Grado)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/63795621/educaci%C3%B3n-vial-2?ref=community" target="_blank" rel="noopener"><span class="emoji">🏷️</span>Educación Vial 2</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/56726579/road-signs?ref=community" target="_blank" rel="noopener"><span class="emoji">🚧</span>Road Signs (Inglés)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/12130147/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">✏️</span>Educación Vial (Completar)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/38603756/educaci%C3%B3n-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🖼️</span>Educación Vial (Emparejar 2)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/112048654/el-fascinante-concurso-de-la-seguridad-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🎯</span>Concurso Seguridad Vial</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/31765962/seguridad-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">🚦</span>Seguridad Vial (Cuestionario)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/85426113/seguridad-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">✔️</span>Seguridad Vial (V o F)</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/88131974/educaci%C3%B3n-vial-y-normas-de-convivencia?ref=community" target="_blank" rel="noopener"><span class="emoji">🎡</span>Vial y Normas de Convivencia</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/68922346/educaci%C3%B3n-vial-soy-peat%C3%B3n?ref=community" target="_blank" rel="noopener"><span class="emoji">🚶</span>Soy Peatón</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/115128238/educaci%C3%B3n-vial-se%C3%B1ales-emparejar?ref=community" target="_blank" rel="noopener"><span class="emoji">🛑</span>Señales - Emparejar</a>
+      <a class="cat-btn" href="https://wordwall.net/es/resource/103310194/seguridad-vial?ref=community" target="_blank" rel="noopener"><span class="emoji">📦</span>Seguridad Vial (Cajas)</a>
+    </div>
+  </div>
+
+  <p class="aviso" id="avisoInicial">ℹ️ Elegí un nivel arriba para ver los juegos disponibles.</p>
+
+</div>
+
+<script>
+function cambiarNivel(nivel){
+  document.getElementById('panelJardin').classList.remove('visible');
+  document.getElementById('panelPrimaria').classList.remove('visible');
+  document.getElementById('avisoInicial').style.display = nivel ? 'none' : 'block';
+  if(nivel === 'jardin') document.getElementById('panelJardin').classList.add('visible');
+  if(nivel === 'primaria') document.getElementById('panelPrimaria').classList.add('visible');
+}
+</script>
+</body>
+</html>
