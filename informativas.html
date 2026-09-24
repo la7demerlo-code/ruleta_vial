@@ -107,8 +107,21 @@
         width: 22%; aspect-ratio: 1 / 1; border-radius: 50%;
         background: #fff; border: 3px solid #000; overflow: hidden; z-index: 4;
         box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        cursor: pointer; transition: transform .12s ease;
     }
     .logo-centro img { width: 100%; height: 100%; object-fit: cover; }
+    .logo-centro:active { transform: translate(-50%, -50%) scale(0.92); }
+    .logo-centro.logo-activo { animation: pulsoLogo 1.1s ease-in-out infinite; }
+    .logo-centro.logo-inactivo { filter: grayscale(75%); opacity: 0.55; cursor: not-allowed; animation: none; }
+    @keyframes pulsoLogo {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.65), 0 0 10px rgba(0,0,0,0.5); }
+        50% { box-shadow: 0 0 0 16px rgba(255, 204, 0, 0), 0 0 10px rgba(0,0,0,0.5); }
+    }
+    #btnGirar.oculto { display: none; }
+    .hint-girar {
+        color: #ffd873; font-weight: bold; font-size: 14px; text-align: center;
+        margin: -4px 0 12px;
+    }
 
     /* Popup grande de resultado sobre la ruleta */
     .popup-resultado {
@@ -171,7 +184,8 @@
         <div class="subtitulo">E.E.S. N° 7 MERLO</div>
 
         <div class="titulo-juego" id="tituloJuego">INFORMATIVAS</div>
-        <button id="btnGirar" disabled>🎡 Girar</button>
+        <button id="btnGirar" class="oculto" disabled>🎡 Girar</button>
+        <div id="hintGirar" class="hint-girar">🎡 Tocá el escudo para girar</div>
         <button id="btnReiniciar">🔄 Reiniciar serie</button>
         <button id="btnFull">⛶ Pantalla completa</button>
         <div id="cargando">Cargando imágenes...</div>
@@ -198,7 +212,7 @@
         <div class="zona-ruleta">
             <div class="puntero"></div>
             <canvas id="wheel" width="800" height="800"></canvas>
-            <div class="logo-centro"><img id="logoImg" src="LOGO.jpeg" onerror="this.onerror=null;this.src='LOGO.jpg'"></div>
+            <div class="logo-centro logo-inactivo" id="logoBoton"><img id="logoImg" src="LOGO.jpeg" onerror="this.onerror=null;this.src='LOGO.jpg'"></div>
 
             <div class="popup-resultado" id="popupResultado">
                 <div class="popup-caja">
@@ -550,6 +564,8 @@ function onLanded(elegido, idx, listaFija) {
 
 function actualizarLabelBoton() {
     document.getElementById('btnGirar').textContent = popupAbierto ? '➡️ Continuar' : '🎡 Girar';
+    const hint = document.getElementById('hintGirar');
+    if (hint) hint.textContent = popupAbierto ? '➡️ Tocá el escudo para continuar' : '🎡 Tocá el escudo para girar';
 }
 
 function alClickGirar() {
@@ -589,7 +605,13 @@ function quitarPendienteYSeguir() {
 
             canvas.style.transform = 'rotate(0deg)';
             drawWheel(st.remaining);
-            iniciarGiro();
+            if (st.bingoMostrado) {
+                // Ya se completo el carton: la ruleta se detiene aca,
+                // no se sigue girando ni salen mas senales.
+                document.getElementById('btnGirar').disabled = true;
+            } else {
+                iniciarGiro();
+            }
         }
     }
     requestAnimationFrame(frameFade);
@@ -740,6 +762,7 @@ function mostrarCartonGanador(items) {
 }
 document.getElementById('btnCerrarGanador').addEventListener('click', () => {
     document.getElementById('overlayGanador').style.display = 'none';
+    reiniciarJuego();
 });
 
 /* ============ AYUDA ============ */
@@ -752,7 +775,22 @@ document.getElementById('btnCerrarAyuda').addEventListener('click', () => {
 
 document.getElementById('btnGirar').addEventListener('click', alClickGirar);
 
-document.getElementById('btnReiniciar').addEventListener('click', () => {
+/* El escudo del centro de la ruleta es ahora el boton para girar */
+(function initLogoBoton() {
+    const btnReal = document.getElementById('btnGirar');
+    const logo = document.getElementById('logoBoton');
+    if (!btnReal || !logo) return;
+    logo.addEventListener('click', () => { btnReal.click(); });
+    function sincronizar() {
+        const activo = !btnReal.disabled;
+        logo.classList.toggle('logo-activo', activo);
+        logo.classList.toggle('logo-inactivo', !activo);
+    }
+    new MutationObserver(sincronizar).observe(btnReal, { attributes: true, attributeFilter: ['disabled'] });
+    sincronizar();
+})();
+
+function reiniciarJuego() {
     if (spinning) return;
     ocultarPopup();
     popupAbierto = false;
@@ -771,7 +809,8 @@ document.getElementById('btnReiniciar').addEventListener('click', () => {
     renderTablero();
     document.getElementById('overlayGanador').style.display = 'none';
     document.getElementById('btnGirar').disabled = false;
-});
+}
+document.getElementById('btnReiniciar').addEventListener('click', reiniciarJuego);
 
 document.getElementById('btnFull').addEventListener('click', () => {
     const el = document.documentElement;
