@@ -80,6 +80,22 @@
     }
     .carton-cell img { max-width: 88%; max-height: 88%; object-fit: contain; }
     .carton-cell.vacia { border: 2px dashed #bbb; background: #fafafa; }
+
+    /* Columna 1: TODAS las senales del mazo (no son 16, son todas las de la ruleta) */
+    .contador-mazo { font-size: 10px; color: #666; text-align: center; margin: -2px 0 4px; font-style: italic; }
+    .mazo-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 4px; }
+    .mazo-grid .carton-cell { aspect-ratio: 1 / 1; }
+
+    /* Boton 3D parpadeante que aparece al fondo de la columna 2 cuando se completa el carton */
+    .btn-bingo-parpadeante {
+        background: #ffcc00; color: #14181f; margin-top: 2px;
+        animation: pulsoBotonBingo 1s ease-in-out infinite;
+    }
+    .btn-bingo-parpadeante.oculto { display: none; }
+    @keyframes pulsoBotonBingo {
+        0%, 100% { box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 0 0 0 rgba(255,204,0,0.75); }
+        50% { box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 0 0 14px rgba(255,204,0,0); }
+    }
     .carton-cell.tachada .tache {
         position: absolute; inset: 0; opacity: 0.75;
         background:
@@ -112,7 +128,7 @@
     .logo-centro img { width: 100%; height: 100%; object-fit: cover; }
     .logo-centro:active { transform: translate(-50%, -50%) scale(0.92); }
     .logo-centro.logo-activo { animation: pulsoLogo 1.1s ease-in-out infinite; }
-    .logo-centro.logo-inactivo { filter: grayscale(75%); opacity: 0.55; cursor: not-allowed; animation: none; }
+    .logo-centro.logo-inactivo { filter: grayscale(75%) brightness(0.7); cursor: not-allowed; animation: none; }
     @keyframes pulsoLogo {
         0%, 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.65), 0 0 10px rgba(0,0,0,0.5); }
         50% { box-shadow: 0 0 0 16px rgba(255, 204, 0, 0), 0 0 10px rgba(0,0,0,0.5); }
@@ -125,7 +141,7 @@
 
     /* Popup grande de resultado sobre la ruleta */
     .popup-resultado {
-        position: absolute; inset: 0; z-index: 6;
+        position: absolute; inset: 0; z-index: 6; cursor: pointer;
         display: none; align-items: center; justify-content: center;
         background: rgba(10,12,18,0.72); border-radius: 50%;
     }
@@ -133,6 +149,15 @@
         background: #fff; color: #000; border-radius: 16px; padding: 22px 26px;
         max-width: 92%; text-align: center; box-shadow: 0 0 40px rgba(255,204,0,0.7);
         border: 3px solid #ffcc00;
+        animation: pulsoPopup 1.1s ease-in-out infinite;
+    }
+    @keyframes pulsoPopup {
+        0%, 100% { box-shadow: 0 0 40px rgba(255,204,0,0.7); }
+        50% { box-shadow: 0 0 55px rgba(255,204,0,1); }
+    }
+    .popup-toque {
+        margin-top: 12px; font-size: clamp(12px, 1.6vw, 15px);
+        color: #b8860b; font-weight: bold;
     }
     .popup-caja img { width: min(520px, 62vw); height: min(520px, 62vh); object-fit: contain; }
     .popup-nombre { font-weight: 900; font-size: clamp(18px, 2.6vw, 30px); text-transform: uppercase; margin-top: 10px; color: #c0392b; }
@@ -169,6 +194,14 @@
     .gan-grid .carton-cell { width: min(20vw, 110px); height: min(20vw, 110px); }
     .gan-banner { margin-top: 16px; font-size: 24px; font-weight: 900; color: #c0392b; text-align: center; animation: parpadeo 1s infinite alternate; }
     @keyframes parpadeo { from { opacity: 1; } to { opacity: 0.45; } }
+    .gan-logo-grande { margin: 4px 0 18px; }
+    .gan-logo-grande img {
+        display: block; width: min(60vw, 60vh, 520px); height: min(60vw, 60vh, 520px);
+        border-radius: 50%; border: 6px solid #000; object-fit: cover;
+        box-shadow: 0 0 50px rgba(255,204,0,0.85);
+    }
+    .gan-texto-final { font-size: clamp(22px, 4vw, 34px); font-weight: 900; text-transform: uppercase; color: #c0392b; text-align: center; }
+    .gan-texto-premios { margin-top: 8px; font-size: clamp(18px, 3vw, 26px); font-weight: 700; color: #14181f; text-align: center; }
     #btnCerrarGanador { margin-top: 16px; padding: 12px 30px; border-radius: 30px; background: #28a745; font-size: 15px; width: auto; }
 
     .overlay-ayuda-texto { max-width: 480px; font-size: 14.5px; line-height: 1.5; font-style: normal; }
@@ -186,25 +219,24 @@
         <div class="titulo-juego" id="tituloJuego">REGLAMENTARIAS 1</div>
         <button id="btnGirar" class="oculto" disabled>🎡 Girar</button>
         <div id="hintGirar" class="hint-girar">🎡 Tocá el escudo para girar</div>
-        <button id="btnReiniciar">🔄 Reiniciar serie</button>
-        <button id="btnFull">⛶ Pantalla completa</button>
         <div id="cargando">Cargando imágenes...</div>
 
-        <hr>
-        <div class="historial-titulo">Ya salieron</div>
-        <div id="historial"><div class="hist-vacio">Ninguna todavía</div></div>
+        <div class="card-box">
+            <div class="card-title">Todas las señales del mazo · <span id="serieLabelCarton">REGLAMENTARIAS 1</span></div>
+            <div id="contadorMazo" class="contador-mazo"></div>
+            <div class="mazo-grid" id="cartonGrid"></div>
+        </div>
     </div>
 
     <!-- COLUMNA 2 -->
     <div class="col-cartones">
+        <button id="btnReiniciar">🔄 Reiniciar serie</button>
+        <button id="btnFull">⛶ Pantalla completa</button>
         <div class="card-box">
             <div class="card-title">Cartón ganador (se llena solo)</div>
-            <div class="carton-grid" id="tableroGrid"></div>
+            <div class="mazo-grid" id="tableroGrid"></div>
         </div>
-        <div class="card-box">
-            <div class="card-title">Cartones en juego · <span id="serieLabelCarton">REGLAMENTARIAS 1</span></div>
-            <div class="carton-grid" id="cartonGrid"></div>
-        </div>
+        <button id="btnBingoParpadeante" class="btn-bingo-parpadeante oculto">🏆 ¡Cartón completo! Tocá para jugar de nuevo</button>
     </div>
 
     <!-- COLUMNA 3 -->
@@ -219,6 +251,7 @@
                     <img id="popupImg" src="">
                     <div class="popup-nombre" id="popupNombre"></div>
                     <div class="popup-desc" id="popupDesc"></div>
+                    <div class="popup-toque">👉 Tocá acá para continuar</div>
                 </div>
             </div>
 
@@ -231,16 +264,9 @@
 <!-- OVERLAY: cartón ganador -->
 <div class="overlay" id="overlayGanador">
     <div class="overlay-caja carton-ganador-caja">
-        <div class="gan-header">
-            <div class="gan-serie" id="serieLabelGanador">REGLAMENTARIAS 1</div>
-            <div class="gan-titulos">
-                <div class="gan-titulo">Bingo Vial</div>
-                <div class="gan-subtitulo">E.E.S. N° 7 MERLO</div>
-            </div>
-            <div class="gan-logo"><img src="LOGO.jpeg" onerror="this.onerror=null;this.src='LOGO.jpg'"></div>
-        </div>
-        <div class="gan-grid" id="cartonGanadorGrid"></div>
-        <div class="gan-banner">🎉 ¡CARTÓN GANADOR! 🎉</div>
+        <div class="gan-logo-grande"><img src="LOGO.jpeg" onerror="this.onerror=null;this.src='LOGO.jpg'"></div>
+        <div class="gan-texto-final">🏆 Terminó el juego 🏆</div>
+        <div class="gan-texto-premios">Ahora vemos premios</div>
         <button id="btnCerrarGanador">Cerrar</button>
     </div>
 </div>
@@ -662,6 +688,7 @@ function decir(item) {
 
 function agregarAlHistorial(item) {
     const hist = document.getElementById('historial');
+    if (!hist) return;
     const vacio = hist.querySelector('.hist-vacio');
     if (vacio) vacio.remove();
     const div = document.createElement('div');
@@ -671,6 +698,7 @@ function agregarAlHistorial(item) {
 }
 function renderHistorialCompleto() {
     const hist = document.getElementById('historial');
+    if (!hist) return;
     hist.innerHTML = '';
     const st = series[current];
     if (st.drawn.length === 0) { hist.innerHTML = '<div class="hist-vacio">Ninguna todavía</div>'; return; }
@@ -684,34 +712,46 @@ function renderHistorialCompleto() {
 
 /* ============ CARTÓN "EN JUEGO" (referencia al azar, se tacha) ============ */
 function generarCarton(seriesKey) {
+    // La columna 2 (carton ganador) tiene las MISMAS casillas que la columna 1
+    // (todo el mazo, 21/22 senales), solo que en un orden mezclado al azar.
     const datos = series[seriesKey].datos.slice();
     for (let i = datos.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [datos[i], datos[j]] = [datos[j], datos[i]];
     }
-    series[seriesKey].carton = { items: datos.slice(0, 16) };
+    series[seriesKey].carton = { items: datos };
 }
 function renderCarton() {
+    // Columna 1: muestra TODAS las senales del mazo de la ruleta (no solo 16).
+    // Apenas una sale en la ruleta, se borra de aca (queda vacia) porque
+    // "se fue" a la ruleta / al carton ganador (columna 2) si corresponde.
     const st = series[current];
     const cont = document.getElementById('cartonGrid');
     cont.innerHTML = '';
-    if (!st.carton) return;
     const idsSalidos = new Set(st.drawn.map(d => d.id));
-    st.carton.items.forEach(item => {
-        const tachada = idsSalidos.has(item.id);
+    let quedan = 0;
+    st.datos.forEach(item => {
+        const salio = idsSalidos.has(item.id);
         const cell = document.createElement('div');
-        cell.className = 'carton-cell' + (tachada ? ' tachada' : '');
-        cell.innerHTML = imgHtml(item.id) + (tachada ? '<div class="tache"></div>' : '');
+        if (salio) {
+            cell.className = 'carton-cell vacia';
+        } else {
+            quedan++;
+            cell.className = 'carton-cell';
+            cell.innerHTML = imgHtml(item.id);
+        }
         cont.appendChild(cell);
     });
     document.getElementById('serieLabelCarton').textContent = TITULO_JUEGO;
+    const contador = document.getElementById('contadorMazo');
+    if (contador) contador.textContent = 'Quedan ' + quedan + ' de ' + st.datos.length;
 }
 function marcarEnCarton() { renderCarton(); }
 
 /* ============ TABLERO "CARTÓN GANADOR" (se llena solo, sin tachar) ============ */
 function renderTablero() {
-    // El "cartón ganador" ahora ES el cartón en juego: se va llenando
-    // solo con las casillas de ese cartón que ya salieron en la ruleta.
+    // Columna 2: tiene las mismas 21/22 casillas que la columna 1 (mismas senales,
+    // en otro orden). Arranca todo vacio y se va llenando con cada senal que sale.
     const st = series[current];
     const cont = document.getElementById('tableroGrid');
     cont.innerHTML = '';
@@ -729,32 +769,25 @@ function renderTablero() {
     });
 }
 function verificarBingo() {
-    // Bingo real: gana cuando TODAS las casillas del cartón en juego
-    // ya salieron en la ruleta (no a las 16 tiradas nomas).
+    // El juego termina cuando se agotan TODAS las senales del mazo de la ruleta
+    // (las 21/22), no apenas se completan las 16 del carton, para que se vea
+    // la ruleta entera hasta el final.
     const st = series[current];
-    if (!st.carton || st.bingoMostrado) return;
-    const idsSalidos = new Set(st.drawn.map(d => d.id));
-    const completo = st.carton.items.every(item => idsSalidos.has(item.id));
-    if (completo) {
+    if (st.bingoMostrado) return;
+    if (st.remaining.length === 0) {
         st.bingoMostrado = true;
-        setTimeout(() => mostrarCartonGanador(st.carton.items), 300);
+        setTimeout(() => mostrarCartonGanador(st.carton ? st.carton.items : []), 300);
     }
 }
 function mostrarCartonGanador(items) {
-    const grid = document.getElementById('cartonGanadorGrid');
-    grid.innerHTML = '';
-    items.forEach(item => {
-        const cell = document.createElement('div');
-        cell.className = 'carton-cell';
-        cell.innerHTML = imgHtml(item.id);
-        grid.appendChild(cell);
-    });
-    document.getElementById('serieLabelGanador').textContent = TITULO_JUEGO;
+    // El boton parpadeante de la columna 2 aparece EXACTAMENTE junto con el popup.
+    const btnBingo = document.getElementById('btnBingoParpadeante');
+    if (btnBingo) btnBingo.classList.remove('oculto');
     document.getElementById('overlayGanador').style.display = 'flex';
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         setTimeout(() => {
-            const u = new SpeechSynthesisUtterance('¡Bingo! Cartón completo.');
+            const u = new SpeechSynthesisUtterance('Terminó el juego. Ahora vemos premios.');
             u.lang = 'es-AR';
             window.speechSynthesis.speak(u);
         }, 60);
@@ -779,8 +812,12 @@ document.getElementById('btnGirar').addEventListener('click', alClickGirar);
 (function initLogoBoton() {
     const btnReal = document.getElementById('btnGirar');
     const logo = document.getElementById('logoBoton');
+    const popup = document.getElementById('popupResultado');
     if (!btnReal || !logo) return;
     logo.addEventListener('click', () => { btnReal.click(); });
+    // El cartel de la senal tapa al escudo mientras esta abierto:
+    // tocar el cartel hace lo mismo que tocar el escudo (cerrar y seguir).
+    if (popup) popup.addEventListener('click', () => { btnReal.click(); });
     function sincronizar() {
         const activo = !btnReal.disabled;
         logo.classList.toggle('logo-activo', activo);
@@ -801,6 +838,8 @@ function reiniciarJuego() {
     st.remaining = st.datos.slice();
     st.drawn = [];
     st.bingoMostrado = false;
+    const btnBingoR = document.getElementById('btnBingoParpadeante');
+    if (btnBingoR) btnBingoR.classList.add('oculto');
     generarCarton(current);
     canvas.style.transform = 'rotate(0deg)';
     drawWheel(st.remaining);
@@ -811,6 +850,7 @@ function reiniciarJuego() {
     document.getElementById('btnGirar').disabled = false;
 }
 document.getElementById('btnReiniciar').addEventListener('click', reiniciarJuego);
+document.getElementById('btnBingoParpadeante').addEventListener('click', reiniciarJuego);
 
 document.getElementById('btnFull').addEventListener('click', () => {
     const el = document.documentElement;
